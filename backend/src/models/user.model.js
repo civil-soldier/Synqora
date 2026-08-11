@@ -1,6 +1,7 @@
 import { Schema } from "mongoose";
 import { type } from "node:os";
 import { PassThrough } from "node:stream";
+import mongoose from "mongoose";
 
 const userSchema = new Schema({
     name: {
@@ -23,4 +24,4 @@ const userSchema = new Schema({
 
 const User = mongoose.model("User" , userSchema);
 
-export { User };
+export default User;
