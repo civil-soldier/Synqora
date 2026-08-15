@@ -1,0 +1,119 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.landingPageContainer {
+  width: 100vw;
+  height: 100vh;
+  background: url("/public/bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #ffa116;
+}
+
+.landingPageContainer nav {
+  padding-inline: 1.3rem;
+  padding-block: 1.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.landingPageContainer nav h2 {
+  font-size: 1.8rem;
+  font-weight: 645;
+}
+
+.landingPageContainer nav .navlist {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.landingPageContainer nav .navlist div {
+  color: #ffa116;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.landingPageContainer nav .navlist div::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -7px;
+  width: 0;
+  height: 2px;
+  background: #ffa116;
+  transition: width 0.25s ease;
+}
+
+.landingPageContainer nav .navlist div:hover {
+  color: #ffffff;
+}
+
+.landingPageContainer nav .navlist div:hover::after {
+  width: 100%;
+}
+
+.landingMainContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80vh;
+  padding-inline: 3rem;
+  color: #ffffff;
+}
+
+.landingMainContainer > div:nth-child(1) {
+  font-size: 2.2rem;
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  padding: 0.9rem 1.5rem;
+  margin-top: 1.9rem;
+
+  background: #ffa116;
+  border: 1px solid #ffa116;
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"] a {
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"]:hover {
+  background: rgba(255, 161, 22, 0.12);
+  border-color: rgba(255, 161, 22, 0.8);
+  box-shadow: 0 0 25px rgba(255, 161, 22, 0.18);
+  transform: translateY(-2px);
+}
+
+.landingMainContainer > div:nth-child(1) div[role="button"]:hover a {
+  color: #ffa116;
+}
+
+.landingMainContainer > div:nth-child(2) img {
+  height: 70vh;
+  width: auto;
+}
