@@ -22,7 +22,7 @@ const start = async() => {
     const connectionDB = await mongoose.connect("mongodb+srv://krajeevranjan290_db_user:yk6201@cluster3.thrin02.mongodb.net/synqora?retryWrites=true&w=majority");
     console.log(`MONGO DB CONNECTED: ${connectionDB.connection.host}`);
     server.listen(app.get("port") , () => {
-        console.log("Server is running on port");
+        console.log(`Server is running on port ${app.get("port")}`);
     });
 }
 

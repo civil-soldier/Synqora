@@ -4,9 +4,8 @@ import { Link } from "react-router-dom";
 export default function landing() {
   return (
     <div className="landingPageContainer">
-
       <nav>
-        <h2>Synqora</h2>
+        <img src="/logo1.png" alt="logo" className="navLogo" />
 
         <div className="navlist">
           <div>Join as guest</div>
@@ -16,11 +15,11 @@ export default function landing() {
       </nav>
 
       <div className="landingMainContainer">
-
         <div>
           <div>
             <h1>
-              <span style={{ color: "#ffa116" }}>Connect</span> with your loved ones
+              <span style={{ color: "#ffa116" }}>Connect</span> with your loved
+              ones
             </h1>
 
             <p>Cover a distance with Synqora</p>
@@ -34,9 +33,7 @@ export default function landing() {
         <div>
           <img src="/mobile.png" alt="landingImage" />
         </div>
-
       </div>
-
     </div>
   );
 }

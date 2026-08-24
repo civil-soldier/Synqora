@@ -117,3 +117,9 @@
   height: 70vh;
   width: auto;
 }
+
+.landingPageContainer nav .navLogo {
+  width: 150px;
+  height: auto;
+  object-fit: contain;
+}
