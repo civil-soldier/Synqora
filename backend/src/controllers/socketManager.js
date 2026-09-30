@@ -110,7 +110,7 @@ export const connectToSocket = (server) => {
 
                         connections[key].splice(index, 1)
                     
-                        if(connectiosn[key].length === 0) {
+                        if(connections[key].length === 0) {
                             delete connections[key];
                         }
                     }
