@@ -30,7 +30,8 @@ export const connectToSocket = (server) => {
             for (let a = 0; a < connections[path].length; a++) {
                 io.to(connections[path][a]).emit(
                     "user-joined",
-                    socket.id
+                    socket.id,
+                    connections[path]
                 );
             }
 
@@ -79,7 +80,8 @@ export const connectToSocket = (server) => {
                     "socket-id-sender": socket.id
                 });
 
-                console.log("message", data, ":", sender);
+
+                console.log("message", matchingRoom, data, ":", sender);
 
                 connections[matchingRoom].forEach((elem) => {
                     io.to(elem).emit(
