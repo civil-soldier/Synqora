@@ -87,4 +87,39 @@ const register = async (req, res) => {
     }
 };
 
-export { login, register };
+const getUserHistory = async (req, res) => {
+    const {token} = req.query;
+
+    try{
+        const user = await User.findOne({token: token});
+        const meetings = await Meeting.find({user_id: user.username});
+        res.json(meetings);
+    } catch (e) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            message: `Something went wrong: ${e.message}`,
+        });
+    }
+    }
+
+    const addToHistory = async (req, res) => {
+    const { token, meeting_code } = req.body;
+    try{
+        const user = await User.findOne({token: token});
+
+        const newMeeting = new Meeting({
+            user_id: user.username,
+            meetingCode: meeting_code,
+        });
+
+        await newMeeting.save();
+        res.status(httpStatus.CREATED).json({
+            message: "Meeting added to history",
+        });
+    } catch (e) {
+        return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            message: `Something went wrong: ${e.message}`,
+        });
+    }
+};
+
+export { login, register, getUserHistory, addToHistory };
