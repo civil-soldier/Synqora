@@ -1,16 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function landing() {
+export default function LandingPage() {
+  const navigate = useNavigate();
+
   return (
     <div className="landingPageContainer">
       <nav>
         <img src="/logo1.png" alt="logo" className="navLogo" />
 
         <div className="navlist">
-          <div>Join as guest</div>
-          <div>Register</div>
-          <div>Login</div>
+          <div onClick={() => navigate("/home")}>Join as Guest</div>
+          <div onClick={() => navigate("/auth", { state: { tab: "signup" } })}>
+            Register
+          </div>
+          <div onClick={() => navigate("/auth", { state: { tab: "login" } })}>
+            Login
+          </div>
         </div>
       </nav>
 
