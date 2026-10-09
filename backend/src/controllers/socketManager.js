@@ -3,6 +3,7 @@ import { Server } from "socket.io";
 let connections = {};
 let messages = {};
 let timeOnline = {};
+let userMeta = {}; // { socketId: { username, videoEnabled } }
 
 export const connectToSocket = (server) => {
     const io = new Server(server, {
@@ -17,13 +18,19 @@ export const connectToSocket = (server) => {
     io.on("connection", (socket) => {
         console.log("New client connected:", socket.id);
 
-        socket.on("join-call", (path) => {
+        socket.on("join-call", (path, username) => {
 
             if (connections[path] === undefined) {
                 connections[path] = [];
             }
 
             connections[path].push(socket.id);
+
+            // Store user metadata
+            userMeta[socket.id] = {
+                username: username || socket.id,
+                videoEnabled: true,
+            };
 
             timeOnline[socket.id] = new Date();
 
@@ -35,13 +42,28 @@ export const connectToSocket = (server) => {
                 );
             }
 
+            // Send existing user metadata to the newly joined user
+            connections[path].forEach((id) => {
+                if (id !== socket.id && userMeta[id]) {
+                    io.to(socket.id).emit("user-meta", id, userMeta[id]);
+                }
+            });
+
+            // Broadcast the new user's metadata to everyone else
+            connections[path].forEach((id) => {
+                if (id !== socket.id) {
+                    io.to(id).emit("user-meta", socket.id, userMeta[socket.id]);
+                }
+            });
+
             if (messages[path] !== undefined) {
                 for (let a = 0; a < messages[path].length; a++) {
                     io.to(socket.id).emit(
                         "chat-message",
                         messages[path][a]["data"],
                         messages[path][a]["sender"],
-                        messages[path][a]["socket-id-sender"]
+                        messages[path][a]["socket-id-sender"],
+                        messages[path][a]["timestamp"]
                     );
                 }
             }
@@ -53,6 +75,43 @@ export const connectToSocket = (server) => {
                 socket.id,
                 message
             );
+        });
+
+        // Video state changed broadcast
+        socket.on("video-state-changed", (videoEnabled) => {
+            if (userMeta[socket.id]) {
+                userMeta[socket.id].videoEnabled = videoEnabled;
+            }
+
+            // Find the room this socket is in and broadcast
+            for (const [roomKey, roomValue] of Object.entries(connections)) {
+                if (roomValue.includes(socket.id)) {
+                    roomValue.forEach((id) => {
+                        if (id !== socket.id) {
+                            io.to(id).emit("video-state-changed", socket.id, videoEnabled);
+                        }
+                    });
+                    break;
+                }
+            }
+        });
+
+        // Username update broadcast
+        socket.on("update-username", (username) => {
+            if (userMeta[socket.id]) {
+                userMeta[socket.id].username = username;
+            }
+
+            for (const [roomKey, roomValue] of Object.entries(connections)) {
+                if (roomValue.includes(socket.id)) {
+                    roomValue.forEach((id) => {
+                        if (id !== socket.id) {
+                            io.to(id).emit("user-meta", socket.id, userMeta[socket.id]);
+                        }
+                    });
+                    break;
+                }
+            }
         });
 
         socket.on("chat-message", (data, sender) => {
@@ -74,10 +133,13 @@ export const connectToSocket = (server) => {
                     messages[matchingRoom] = [];
                 }
 
+                const timestamp = new Date().toISOString();
+
                 messages[matchingRoom].push({
                     sender: sender,
                     data: data,
-                    "socket-id-sender": socket.id
+                    "socket-id-sender": socket.id,
+                    timestamp: timestamp
                 });
 
 
@@ -88,7 +150,8 @@ export const connectToSocket = (server) => {
                         "chat-message",
                         data,
                         sender,
-                        socket.id
+                        socket.id,
+                        timestamp
                     );
                 });
             }
@@ -96,6 +159,9 @@ export const connectToSocket = (server) => {
 
         socket.on("disconnect", () => {
             var diffTime = Math.abs(timeOnline[socket.id] - new Date());
+
+            // Clean up user metadata
+            delete userMeta[socket.id];
 
             var key
 
