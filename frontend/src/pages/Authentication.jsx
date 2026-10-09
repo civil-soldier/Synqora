@@ -10,6 +10,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { AuthContext } from "../contexts/AuthContext";
 import Snackbar from "@mui/material/Snackbar";
+import { useLocation } from "react-router-dom";
 
 const defaultTheme = createTheme({
   palette: {
@@ -60,12 +61,15 @@ const inputStyle = {
 };
 
 export default function Authentication() {
+  const location = useLocation();
+  const initialTab = location.state?.tab === "login" ? 0 : 1;
+
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [name, setName] = React.useState("");
   const [message, setMessage] = React.useState("");
 
-  const [formState, setFormState] = React.useState(1);
+  const [formState, setFormState] = React.useState(initialTab);
 
   const [open, setOpen] = React.useState(false);
 

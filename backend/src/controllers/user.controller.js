@@ -2,6 +2,7 @@ import httpStatus from "http-status";
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import User from "../models/user.model.js";
+import { Meeting } from "../models/meetings.model.js";
 
 const login = async (req, res) => {
     const { username, password } = req.body;
@@ -39,6 +40,8 @@ const login = async (req, res) => {
 
         return res.status(httpStatus.OK).json({
             token,
+            name: user.name,
+            username: user.username,
         });
 
     } catch (e) {
@@ -92,8 +95,14 @@ const getUserHistory = async (req, res) => {
 
     try{
         const user = await User.findOne({token: token});
+        if (!user) {
+            return res.status(httpStatus.UNAUTHORIZED).json({
+                message: "Invalid or expired token",
+            });
+        }
+
         const meetings = await Meeting.find({user_id: user.username});
-        res.json(meetings);
+        return res.status(httpStatus.OK).json(meetings);
     } catch (e) {
         return res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
             message: `Something went wrong: ${e.message}`,
@@ -105,6 +114,17 @@ const getUserHistory = async (req, res) => {
     const { token, meeting_code } = req.body;
     try{
         const user = await User.findOne({token: token});
+        if (!user) {
+            return res.status(httpStatus.UNAUTHORIZED).json({
+                message: "Invalid or expired token",
+            });
+        }
+
+        if (!meeting_code) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                message: "Meeting code is required",
+            });
+        }
 
         const newMeeting = new Meeting({
             user_id: user.username,

@@ -1,11 +1,12 @@
 import {Schema }  from "mongoose";
+import mongoose from "mongoose";
 
 const meetingSchema = new Schema(
     {
         user_id: {
             type: String,
         },
-        meetingSchema: {
+        meetingCode: {
             
             type: String,
             required: true,
